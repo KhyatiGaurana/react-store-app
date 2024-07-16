@@ -1,31 +1,32 @@
-import styles from "styles/BasketSidebar.module.scss";
-import emptyCardImg from "images/empty_cart.svg";
+import AddToBasketBtn from "components/AddToBasketBtn";
 import GetIcon from "components/GetIcon";
+// import Quantity from "components/Quantity";
+import Card from "components/Card";
 import Title from "components/Title";
 import clsx from "clsx";
-import BasketItem from "components/BasketItem";
+import emptyCardImg from "images/empty_cart.svg";
 import { BasketContext } from "context/BasketContext";
-import { useContext, useRef } from "react";
+import useMakeRequest from "hooks/useMakeRequest";
+import { useContext } from "react";
+import BasketItem from "components/BasketItem";
+import { useParams, Link } from "react-router-dom";
+import { useRef } from "react";
+import styles from "styles/BasketItem.module.scss";
 
-const BasketSidebar = () => {
-  const { basketIsOpen, setBasketIsOpen, basketItems, setBasketItems, basketTotal: _basketTotal, setBasketTotal } = useContext(BasketContext);
+const Cart = () => {
+
+const { basketIsOpen, setBasketIsOpen, basketItems, setBasketItems, basketTotal: _basketTotal, setBasketTotal } = useContext(BasketContext);
   const container = useRef();
 
   return (
-    <div
-      className={clsx(styles.sidebarContainer, basketIsOpen ? styles.show : styles.hide)}
-      ref={container}
-      onClick={(event) => event.target === container.current && setBasketIsOpen(false)}
-    >
+    <div>
       <div className={styles.sidebar}>
         <div className={styles.header}>
           <div className={styles.title}>
             <Title txt="your basket" size={20} transform="uppercase" />
             {<small>your basket has got {basketItems.length} items</small>}
           </div>
-          <button className={styles.close} onClick={() => setBasketIsOpen(false)}>
-            <GetIcon icon="BsX" size={30} />
-          </button>
+          
         </div>
         {basketItems.length > 0 ? (
           <>
@@ -61,4 +62,4 @@ const BasketSidebar = () => {
   );
 };
 
-export default BasketSidebar;
+export default Cart;

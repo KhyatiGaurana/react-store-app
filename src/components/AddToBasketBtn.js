@@ -3,17 +3,18 @@ import { BasketContext } from "context/BasketContext";
 import { useContext } from "react";
 import GetIcon from "components/GetIcon";
 
-const AddToBasketBtn = ({ data: product }) => {
+const AddToBasketBtn = ({ data: product, onAddToCart }) => {
   const { basketItems, setBasketItems, setBasketTotal, currentQuantity } = useContext(BasketContext);
 
   const addToBasket = (product) => {
-    let arr = [...basketItems];
-    let filtered = basketItems.filter((item) => item.id === product.id);
-    if (filtered.length > 0) {
-      filtered[0].quantity += 1;
-      arr[arr.indexOf(filtered[0])] = filtered[0];
-      setBasketItems(arr);
+    // Check if the product already exists in the basket
+    const existingProduct = basketItems.find(item => item.id === product.id);
+
+    if (existingProduct) {
+      // If product exists, update its quantity in UI but not the basket
+      return; // Exit function to prevent adding duplicate items
     } else {
+      // If product is new, add it to the basket and update total
       setBasketItems((oldState) => [
         ...oldState,
         {
@@ -21,12 +22,12 @@ const AddToBasketBtn = ({ data: product }) => {
           title: product.title,
           image: product.image,
           price: product.price,
-          quantity: currentQuantity,
+          quantity: 1, // Set quantity to 1 for a single item
         },
       ]);
+      setBasketTotal((oldTotal) => oldTotal + product.price); // Update total only once
+      onAddToCart(product.id);
     }
-
-    setBasketTotal((oldTotal) => (oldTotal += product.price * (currentQuantity || 1)));
   };
 
   return (
@@ -37,7 +38,7 @@ const AddToBasketBtn = ({ data: product }) => {
         addToBasket(product);
       }}
     >
-      <GetIcon icon="BsFillCartPlusFill" size={18} /> add to basket
+      <GetIcon icon="BsFillCartPlusFill" size={18} /> Add to Cart
     </button>
   );
 };

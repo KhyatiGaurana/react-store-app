@@ -2,9 +2,28 @@ import styles from "styles/Home.module.scss";
 import Card from "components/Card";
 import Title from "components/Title";
 import useMakeRequest from "hooks/useMakeRequest";
+import { useState, useEffect } from "react";
 
 const Home = () => {
-  const result = useMakeRequest("https://fakestoreapi.com/products/");
+  
+  let data = useMakeRequest("https://fakestoreapi.com/products/");
+  
+  const [result,setResult] = useState(" ");
+
+  useEffect(()=>{
+    if(data)
+    setResult(data);
+
+    
+  },[data])
+  const handleAddToCart = (productId) => {
+
+    console.log(`Product with ID ${productId} added to cart`);
+    alert("Hello");
+
+    setResult(result.filter(product => product.id !== productId));
+    alert(`${productId}`);
+  };
 
   if (!result.data) {
     if (result.error) {
@@ -33,7 +52,7 @@ const Home = () => {
           </div>
           <div className={styles.row}>
             {result.data ? (
-              result.data.map((product, key) => <Card product={product} key={key} />)
+              result.data.map((product, key) => <Card product={product} key={key} onAddToCart={() => handleAddToCart(product.id)}/>)
             ) : (
               <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
                 <Title txt={result.error} size={25} transform="uppercase" />
